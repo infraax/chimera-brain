@@ -74,6 +74,11 @@ The Chimera is a three-layer architecture:
 | D004 | Sparse over null as system-wide principle | VRCM principle: always have a position, never go blank. Vector should always have state. | S0 | DECIDED |
 | D005 | Resonance transitions (oscillation, not switching) | VRCM principle: state changes should be harmonic, not discrete jumps | S0 | DECIDED |
 | D006 | Separate repo (chimera-brain) for architecture before integration | Clean separation of architecture design from implementation; integrate into vectorax/wirepod later | S0 | DECIDED |
+| D007 | PATH 1: OTA extraction over live SSH for binary acquisition | Cleaner, reproducible baseline; doesn't depend on having a live robot connected | S1 | DECIDED |
+| D008 | Dev firmware build (0.13.1545) as primary RE target | Dev builds may contain more debug symbols/strings than production; available on Internet Archive | S1 | DECIDED |
+| D009 | Docker for ext4 mounting (macOS can't mount ext4 natively) | Ubuntu container with --privileged and loop mount; clean, reproducible, no kernel extension needed | S1 | DECIDED |
+| D010 | DDL open-source engine code as Rosetta Stone for binary RE | 299 C++ files provide type definitions, API surfaces, header paths — dramatically reduces Ghidra guesswork | S1 | DECIDED |
+| D011 | MoodManager implementation is the primary RE target | Not in DDL open-source; API surface known from 16 referencing files; tick/decay math is what we need for L1 | S1 | DECIDED |
 
 ---
 
@@ -83,10 +88,11 @@ The Chimera is a three-layer architecture:
 |---|----------|---------|----------|--------|
 | Q001 | How does L3 (Constructor) modify L1 (Brainstem) attractor landscape during idle? | VRCM sleep compilation maps here. Need concrete mechanism. | HIGH | OPEN |
 | Q002 | What is the latency budget for L2 perception-to-action? | Must feel seamless. Any visible lag between layers breaks creature illusion. | HIGH | OPEN |
-| Q003 | Can Vector's existing 5D emotion model be extended to support VRCM resonance? | TRM shows 5 dimensions with decay graphs. Need to assess if resonance can be added via JSON config or requires code changes. | HIGH | OPEN |
+| Q003 | Can Vector's existing 5D emotion model be extended to support VRCM resonance? | **PARTIALLY ANSWERED (S1):** Decay graphs are JSON-configurable. Emotion values range [-1,1]. DDL docs confirm role decreased over time. Resonance could be added via modified decay curves + external affector injection. MoodManager internals still need Ghidra RE to confirm. | HIGH | IN PROGRESS |
 | Q004 | Where does the LLM run — on-device (Pi), local network, or cloud? | Latency vs capability tradeoff. Affects L2 and L3 design. | MEDIUM | OPEN |
 | Q005 | How does face recognition feed into the trust dimension? | TRM shows on-device face enrollment with feature vectors. Trust is already a dimension in Vector's emotion model. | MEDIUM | OPEN |
 | Q006 | What is the minimum viable creature? | Need to define the first testable implementation that demonstrates creature-feel beyond stock Vector. | HIGH | OPEN |
+| Q007 | What is the exact mapping from 5D EmotionType → SimpleMoodType in MoodManager? | DDL source shows GetSimpleMood() output drives animations/behaviors. The mapping function is in the un-open-sourced moodManager.cpp — needs Ghidra decompilation. | HIGH | OPEN |
 
 ---
 
@@ -95,12 +101,16 @@ The Chimera is a three-layer architecture:
 | File | Purpose | Status |
 |------|---------|--------|
 | `CHIMERA_REGISTRY.md` | This file. Master state. Read first, write last. | ACTIVE |
+| `CHIMERA_REVERSE_ENGINEERING.md` | RE spec: binary targets, extraction pipeline, analysis plan | ACTIVE |
 | `CHIMERA_CROSSREF.md` | TRM ↔ VRCM ↔ Chimera subsystem mapping | IN PROGRESS |
 | `CHIMERA_L1_BRAINSTEM.md` | Layer 1 spec: reactive, emotion, creature-feel | TEMPLATE |
 | `CHIMERA_L2_CORTEX.md` | Layer 2 spec: attention, perception, integration | TEMPLATE |
 | `CHIMERA_L3_CONSTRUCTOR.md` | Layer 3 spec: LLM, memory, personality | TEMPLATE |
 | `CHIMERA_INTERFACES.md` | Inter-layer communication protocols | TEMPLATE |
+| `Reesearch-Rapport.md` | Stack analysis: language/framework choices for 3-layer arch | REFERENCE |
+| `CHIMERA_RE_HANDOFF.md` | RE session handoff: file locations, next steps, technical notes | ACTIVE |
 | `README.md` | Project overview for humans and agents | ACTIVE |
+| `~/chimera-re/` | RE workspace: firmware, binaries, libs, configs, tools | ACTIVE |
 
 ---
 
@@ -109,6 +119,8 @@ The Chimera is a three-layer architecture:
 | Session | Date | Agent | Summary | Files Modified |
 |---------|------|-------|---------|----------------|
 | S0 | 2026-03-30 | Claude Opus 4.6 | Foundation session. Indexed all VRCM docs (V1, V2, Research Paper). Downloaded and parsed full TRM (543 pages). Established three-layer chimera architecture. Created registry, specs, crossref. Identified Vector's existing 5D emotion model, 86-class behavior tree, and JSON-configurable systems as extension points. | ALL (created) |
+| S1 | 2026-03-31 | Antigravity | **RE environment setup.** Installed RE tools (binutils, p7zip, JDK21). Downloaded firmware OTA 0.13.1545 from Internet Archive. Decrypted with openssl (key: 這是一個密碼). Extracted via Docker: vic-engine (266K), libcozmo_engine.so (13.6MB), 429 JSON configs, 2 TFLite models. Found 17,409 demangled symbols, 536 emotion/behavior-related. **Major discovery:** DDL open-sourced 299 C++ engine files (not MoodManager). CLAD type defs confirm 5D emotion enum + 5-category SimpleMoodType. Ghidra 12.0.4 installed. | CHIMERA_REGISTRY.md, ~/chimera-re/* |
+| S2 | 2026-03-31 | Antigravity | **Ghidra headless analysis.** Auto-analysis (303s) → 35,291 functions. Decompiled 78 exported + 18 core internal MoodManager functions (5,350 lines C). Answered Q007: GetSimpleMood uses only Stimulated+Confident. Identified 9 non-open-sourced DDL engine directories. Full subsystem extraction attempted but Ghidra resource-intensive on 13.6MB binary — deferred to next session. Handoff file created. | CHIMERA_REGISTRY.md, CHIMERA_RE_HANDOFF.md, ~/chimera-re/ghidra-output/* |
 
 ---
 
