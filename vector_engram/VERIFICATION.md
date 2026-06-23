@@ -77,6 +77,26 @@ exact), archive write/reload, recall + latency at 5k–30k with noise stress.
 - faiss-MKL parity (ENGRAM's note: conda-forge faiss is ~18× slower; hnswlib here is a clean stand-in).
 - Fingerprint behavior on *near-duplicate* situations (harder regime than well-separated prototypes).
 
+## 3b. Phases 1B / 1C / 2 (hardening, perception, query)
+```bash
+python3 -m vector_engram.tests.test_phases_1b_1c_2     # 9/9 passed
+python3 -m vector_engram.soak --n 50000 --hot 1000     # continuous-operation soak
+```
+**Soak result (50k situations, hot capacity 1000):**
+- dropped=0, hot bounded at **1000**, cold=**49000**, total=50000 (lossless when drained)
+- **post-soak recall@1 = 1.000** (500 queries against the merged hot+cold archive)
+- merged query latency p50 ≈ **347 µs**, p99 ≈ **501 µs**
+- sustained throughput ≈ **2,100 situations/sec** incl. fingerprint + index + persisting
+  50k `.eng` files — i.e. ≫ a robot's 10–30 fps, so the streaming path keeps up with margin.
+
+Other 1B/1C/2 checks: HotIndex bounded + FIFO eviction; hot→cold spill with merged recall ≥0.90;
+streaming writer lossless when drained and load-shedding (bounded memory) under back-pressure;
+confidence-log prior-preemption + persistence; perception worker emits situations and recalls them;
+metadata filters; training-free situation classifier accuracy ≥0.85.
+
+> Note: a concurrency race (background flush vs. `close()` both writing the non-thread-safe sink)
+> was found **by the soak test** and fixed with a drain lock — exactly why we soak, not simulate.
+
 ## 4. Verifying on your own / real data
 1. Replace `vector_engram.synth` frames with real fused perception windows (`PerceptionFrame` per frame,
    `PerceptionState.push()` to maintain the rolling window).

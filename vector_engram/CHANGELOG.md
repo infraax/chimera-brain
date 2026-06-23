@@ -7,6 +7,51 @@ Format: reverse-chronological. Each entry = what changed + why + how it was veri
 
 ---
 
+## [0.2.0] — 2026-06-23 — Phases 1B + 1C + 2: hardening, perception worker, query
+
+**Goal:** finish the ENGRAM adjustments end-to-end before moving on — continuous
+operation hardening (1B), the perception→memory bridge (1C), and useful query layers (2).
+
+### Added
+- **Phase 1B — hardening**
+  - `archive.py` — `HotIndex` (fixed-capacity exact-cosine **ring buffer** = the on-robot
+    hot index, O(1) insert, FIFO evict) + `HotColdMemory` (hot ring + cold hnsw/disk
+    archive, **spill-on-evict**, merged hot+cold retrieval). Bounded RAM for 24/7 use.
+  - `streaming.py` — `StreamingEngramWriter`: non-blocking bounded-queue writes on a
+    background flush thread; **load-sheds (drops oldest)** under back-pressure so the
+    perception loop never stalls.
+  - `confidence.py` — `ConfidenceLog` (IndexC): per-situation hit/miss history,
+    `should_preempt()` for chronically-wrong matches, JSON persistence.
+  - `soak.py` — continuous-operation verification (bounded memory, sustained throughput,
+    stable recall over 50k writes).
+- **Phase 1C — perception bridge**
+  - `perception.py` — `PerceptionSource` protocol, `FingerprintWorker` (rolling window →
+    emits a situation every `stride` frames / on metadata change), `MockPerceptionSource`
+    (real loop, generated data), `recall_summary()` (speakable recollection for L3/voice).
+- **Phase 2 — query**
+  - `query.py` — `filter_retrieved()` (who/where/activity/time-range) + `SituationClassifier`
+    (training-free weighted k-NN predicting person/activity/place from a fingerprint).
+  - `tests/test_phases_1b_1c_2.py` — 9 tests across all three phases.
+
+### Fixed
+- **Concurrency race in `StreamingEngramWriter`** (found by the soak test, not a unit test):
+  the background flush thread and `close()`'s synchronous flush both called the
+  non-thread-safe sink concurrently, losing/corrupting writes. Fixed with a `_drain_lock`
+  (single-consumer invariant) + `close()` now stops/joins the thread before the final drain.
+
+### Verified (real runs, this machine)
+- `test_phases_1b_1c_2`: **9/9 passed** (+ the original `7/7` still green).
+- HotIndex: bounded at capacity, correct FIFO eviction (250 inserts→100 retained, 150 evicted).
+- HotCold spill: 300 writes → hot=100, cold=200; merged recall@1 **≥ 0.90**.
+- Streaming: 200 enqueued → 200 flushed, **0 dropped** when drained; undersized buffer
+  **sheds 150/200** (bounded memory) as designed.
+- Classifier: person+activity+place exact-match accuracy **≥ 0.85** (24 prototypes).
+- **Soak (50k situations, hot cap 1000):** dropped=0, hot bounded at 1000, cold=49000,
+  **post-soak recall@1 = 1.000**, merged query p50≈347µs/p99≈501µs, sustained throughput
+  ~2.1k situations/sec incl. fingerprint+index+persisting 50k `.eng` files (≫ 10–30 fps).
+
+---
+
 ## [0.1.0] — 2026-06-23 — Phase 1A: decouple + situational fingerprint, end-to-end
 
 **Goal:** Realize Phase 1A of `ENGRAM_FOR_VECTOR.md` — take ENGRAM's proven core (Fourier
