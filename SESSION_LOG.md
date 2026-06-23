@@ -3,6 +3,9 @@
 Running log for the Vector-Eng / Chimera multi-repo work.
 Branch: `claude/multi-repo-architecture-npf6jv`
 
+> **All repo URLs, clone commands, context files, and external sources are in
+> [`REFERENCES.md`](REFERENCES.md)** — re-clone context there (the sandbox is ephemeral).
+
 ---
 
 ## NEXT SESSION — START HERE  ▶ Curate the awesome-list backlog
