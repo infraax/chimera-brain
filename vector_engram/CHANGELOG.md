@@ -7,6 +7,40 @@ Format: reverse-chronological. Each entry = what changed + why + how it was veri
 
 ---
 
+## [0.6.0] — 2026-06-24 — Phase 4: the capacity gate (does COMPOSE work on our vectors?)
+
+**Goal:** the load-bearing experiment before building COMPOSE (identity bundles / the
+"self-frequency"): measure whether many correlated fingerprints can be woven under a label
+and still be individually recovered (`frequency_memory__UNIFIED.md`, Experiment #2). Also
+inspect what the fingerprints actually are.
+
+### Added
+- **`vsa.py`** — minimal HRR binding algebra: `bind` (circular convolution), `unbind`
+  (circular correlation), `bundle` (normalized superposition), `cleanup` (item-memory
+  nearest), `random_vectors`, `RandomProjection` (D→Dhi, seeded), `pairwise_cosine_stats`.
+- **`capacity_experiment.py`** (runnable: `python -m vector_engram.capacity_experiment`) —
+  fingerprint inspection + bundling-capacity sweep across conditions.
+- **`CAPACITY_RESULTS.md`** — the recorded run + interpretation + the gate verdict.
+- **`tests/test_vsa_capacity.py`** — 5 tests (HRR roundtrip, bundle+cleanup, orthogonality
+  vs correlation, JL cosine-preservation, the capacity ordering).
+
+### Measured (the actual numbers)
+- Fingerprints: amplitude is all-positive, per-block unit-norm (full-norm √2), **separates
+  situations** (within-cos 0.96 vs across 0.69, gap +0.28). GDF adds signed phase, smaller
+  general gap (+0.22) — its value is temporal order, not discriminability.
+- **The correlation is real:** raw fingerprints mean |cos| = **0.673** (random = 0.052).
+- **Capacity@0.9:** random@230 = **16**; raw-amplitude@230 = **8** (correlation halves it);
+  gdf@460 = 8 (better tail); **projected raw@2048 = 32** (4× recovery, even though JL keeps
+  corr ≈ 0.68); random@2048 = 48+. Binding with random roles decorrelates the *bundle
+  components*, so lifting dimension — not decorrelating items — is what buys capacity.
+
+### GATE VERDICT — **PASS → COMPOSE is unblocked**
+Project impressions to ~2048-D before bind+bundle (8→32 capacity); leaf-bundle ≤ ~24 with a
+hierarchy; cleanup memory mandatory. Next phase builds `compose.py` (the "self-frequency").
+Verified: `pytest` → **36 passed** (31 prior + 5 new).
+
+---
+
 ## [0.5.0] — 2026-06-24 — Phase 3: recall by resonance (Modern Hopfield, RETRIEVE)
 
 **Goal:** generalize nearest-neighbour recall to resonance. Modern Hopfield retrieval is
