@@ -18,6 +18,7 @@ from .sense import (EmbeddingFrame, MeaningEncoder, MeaningState, Sense,
 from .resonance import resonate, softmax
 from .vsa import (RandomProjection, bind, bundle, cleanup, normalize,
                   pairwise_cosine_stats, random_vectors, unbind)
+from .compose import Identity, SelfModel
 from .store import Retrieved, SituationMemory, TwofoldMemory
 from .archive import HotColdMemory, HotIndex, HotColdStats
 from .streaming import StreamingEngramWriter, WriterStats
@@ -25,7 +26,7 @@ from .confidence import ConfidenceLog
 from .perception import FingerprintWorker, MockPerceptionSource, PerceptionSource, recall_summary
 from .query import SituationClassifier, filter_retrieved
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 __all__ = [
     "fingerprint", "fingerprint_gdf", "cosine",
@@ -43,6 +44,8 @@ __all__ = [
     # phase 4 (VSA substrate + the capacity gate)
     "bind", "unbind", "bundle", "cleanup", "normalize", "random_vectors",
     "RandomProjection", "pairwise_cosine_stats",
+    # phase 5 (COMPOSE — weaving a self)
+    "Identity", "SelfModel",
     # phase 1B
     "HotIndex", "HotColdMemory", "HotColdStats",
     "StreamingEngramWriter", "WriterStats", "ConfidenceLog",

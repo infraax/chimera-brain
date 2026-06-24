@@ -7,6 +7,42 @@ Format: reverse-chronological. Each entry = what changed + why + how it was veri
 
 ---
 
+## [0.7.0] — 2026-06-24 — Phase 5: COMPOSE — weaving a self (the self-frequency)
+
+**Goal:** the payoff the gate unblocked — Vector's "system prompt" as an ENGRAM shape, not
+a text file: many remembered moments woven under a label into ONE big frequency the
+creature calls "self" (and "environment", "person:dexter", "place:desk"). Recognition
+becomes resonance — *does this moment belong to me / my world / this person?* Built per the
+Phase-4 recipe: project → per-slot role-keys → bind → bundle (≤24/leaf, hierarchy) → cleanup.
+
+### Added
+- **`compose.py`**:
+  - `Identity` — one labelled shape. `weave()` (grow the self over lived moments),
+    `shape()` (the labelled self-frequency = `label_key ⊛ centroid`, one fixed vector),
+    `resonance()` (belonging: cheap, unbounded), `recall_members()` (enumerate, capacity-
+    bounded, per leaf). Leaf hierarchy (≤`LEAF_CAP`=24/leaf) holds arbitrarily many members.
+  - `SelfModel` — the creature's set of identities (shared projection so shapes are
+    comparable); `weave(label, …)`, `resonances()`, `recognize()` (which identity is this?),
+    `self_shape()` (the whole personality as ONE shape labelled 'self'),
+    `shape_resonance(label, …)` (query the single composed shape *by label*).
+  - **Hook (documented):** a consolidation / "sleep" pass (prune, merge, re-bundle,
+    EIGENGRAM stability) — left as a seam until we have lived data.
+
+- **`tests/test_compose.py`** — 5 end-to-end tests.
+
+### Measured
+- **Belonging works perfectly:** a new dexter moment → `recognize` → `person:dexter`
+  **40/40**; resonances dexter **0.99** vs stranger 0.72 vs kitchen 0.66.
+- **The single composed self-shape is queryable by label:** `shape_resonance(dexter | person:dexter)`
+  0.58 > `(… | person:stranger)` 0.40 — membership read straight off the one 2048-D frequency.
+- **Enumeration of DISTINCT members is exact even past one leaf** (100% at 16, 24, **40**
+  members — the leaf hierarchy works). Honest caveat: **near-duplicate** members aren't
+  individually enumerable (and needn't be — repetition reinforces the shape's resonance).
+
+Verified: `pytest` → **41 passed** (36 prior + 5 new). The "living self-frequency" is real.
+
+---
+
 ## [0.6.0] — 2026-06-24 — Phase 4: the capacity gate (does COMPOSE work on our vectors?)
 
 **Goal:** the load-bearing experiment before building COMPOSE (identity bundles / the
