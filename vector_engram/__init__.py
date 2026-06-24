@@ -15,6 +15,7 @@ from .state import PerceptionFrame, PerceptionState, RawState, StateVector
 from .sense import (EmbeddingFrame, MeaningEncoder, MeaningState, Sense,
                     fingerprint_dim, impression_for, meaning_impression,
                     meaning_impression_gdf, reflex_impression, reflex_impression_gdf)
+from .resonance import resonate, softmax
 from .store import Retrieved, SituationMemory, TwofoldMemory
 from .archive import HotColdMemory, HotIndex, HotColdStats
 from .streaming import StreamingEngramWriter, WriterStats
@@ -22,7 +23,7 @@ from .confidence import ConfidenceLog
 from .perception import FingerprintWorker, MockPerceptionSource, PerceptionSource, recall_summary
 from .query import SituationClassifier, filter_retrieved
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 __all__ = [
     "fingerprint", "fingerprint_gdf", "cosine",
@@ -35,6 +36,8 @@ __all__ = [
     "reflex_impression", "meaning_impression", "TwofoldMemory",
     # phase 2 (the GDF phase complement)
     "reflex_impression_gdf", "meaning_impression_gdf", "impression_for", "fingerprint_dim",
+    # phase 3 (recall by resonance — Modern Hopfield)
+    "resonate", "softmax",
     # phase 1B
     "HotIndex", "HotColdMemory", "HotColdStats",
     "StreamingEngramWriter", "WriterStats", "ConfidenceLog",

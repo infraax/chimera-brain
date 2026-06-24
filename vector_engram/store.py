@@ -101,6 +101,33 @@ class SituationMemory:
             out.append(Retrieved(cert=self._certs[label], score=score, label=label))
         return out
 
+    # ---- recall by resonance (Modern Hopfield) ------------------------------ #
+    def recall_resonant(self, query: StateVector, k: int = 5, *, beta: float = 8.0,
+                        steps: int = 1, prefilter: int | None = None) -> list[Retrieved]:
+        """Recall by letting the cue resonate (settle) over the store, not just snap to
+        the nearest. Low `beta` blends across similar memories; high `beta` is sharp;
+        `steps`>1 completes a partial/noisy cue. See `resonance.py`."""
+        return self.recall_resonant_vec(self.fingerprint_state(query), k,
+                                        beta=beta, steps=steps, prefilter=prefilter)
+
+    def recall_resonant_vec(self, cue: np.ndarray, k: int = 5, *, beta: float = 8.0,
+                            steps: int = 1, prefilter: int | None = None) -> list[Retrieved]:
+        from .resonance import resonate
+        if not self._certs:
+            return []
+        # two-stage (the report's pattern): index prefilters candidates, resonance reranks.
+        if prefilter is None:
+            prefilter = max(k * 10, 50)
+        cand = self.index.query(cue, min(prefilter, len(self._certs)))
+        if not cand:
+            return []
+        labels = [lbl for lbl, _ in cand]
+        P = np.stack([self._certs[lbl].vec.astype(np.float64) for lbl in labels])
+        _completed, weights = resonate(cue, P, beta=beta, steps=steps)
+        order = np.argsort(weights)[::-1][:k]
+        return [Retrieved(cert=self._certs[labels[i]], score=float(weights[i]),
+                          label=labels[i]) for i in order]
+
     # ---- MemoryStore-compatible surface (for the DU skeleton) --------------- #
     def write(self, fp: np.ndarray, meta: dict, score: float = 1.0) -> int:
         cert = SituationCert(vec=np.asarray(fp, dtype=np.float32),
@@ -194,15 +221,24 @@ class TwofoldMemory:
         return self.meaning.write_state(meaning, persist=persist)
 
     # ---- recall ------------------------------------------------------------- #
-    def recall_reflex(self, perception, k: int = 5) -> list[Retrieved]:
+    # `beta` is the sharpness dial: None = sharp nearest-neighbour (the β→∞ limit we
+    # already had); a finite value lets the cue resonate (and `steps`>1 completes a
+    # partial cue). Same faculty, different sharpness.
+    def recall_reflex(self, perception, k: int = 5, *, beta: float | None = None,
+                      steps: int = 1) -> list[Retrieved]:
         """'Has my body felt a moment like this before?'"""
-        return self.reflex.knn_state(perception, k)
+        if beta is None:
+            return self.reflex.knn_state(perception, k)
+        return self.reflex.recall_resonant(perception, k, beta=beta, steps=steps)
 
-    def recall_meaning(self, meaning, k: int = 5) -> list[Retrieved]:
+    def recall_meaning(self, meaning, k: int = 5, *, beta: float | None = None,
+                       steps: int = 1) -> list[Retrieved]:
         """'Do I recognise what this is?'"""
         if self.meaning is None:
             raise RuntimeError("no MEANING register (construct with meaning_dim=…)")
-        return self.meaning.knn_state(meaning, k)
+        if beta is None:
+            return self.meaning.knn_state(meaning, k)
+        return self.meaning.recall_resonant(meaning, k, beta=beta, steps=steps)
 
     def __len__(self) -> int:
         n = len(self.reflex)

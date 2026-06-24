@@ -7,6 +7,42 @@ Format: reverse-chronological. Each entry = what changed + why + how it was veri
 
 ---
 
+## [0.5.0] — 2026-06-24 — Phase 3: recall by resonance (Modern Hopfield, RETRIEVE)
+
+**Goal:** generalize nearest-neighbour recall to resonance. Modern Hopfield retrieval is
+the attention update, and cosine-kNN is its β→∞ (infinitely sharp) special case
+(`frequency_memory__UNIFIED.md`). So we don't replace the store — we add a sharpness
+dial (β) and optional settling steps, getting episodic↔contextual recall and (in the
+right regime) pattern completion, with zero new storage.
+
+### Added
+- **`resonance.py`** — `resonate(cue, patterns, beta, steps)` (the Hopfield update:
+  `w=softmax(β·Px)`, `x←Pᵀw`, repeat) + a stable `softmax`. Creature framing: a cue can
+  *resonate* across memories or *settle* toward the one it half-matches.
+- **`store.py`** — `SituationMemory.recall_resonant()` (two-stage: index prefilters
+  candidates → resonance reranks, the report's pattern) and a `beta`/`steps` dial on
+  `TwofoldMemory.recall_reflex/recall_meaning` — **`beta=None` = the sharp kNN we already
+  had** (the β→∞ limit), a finite value resonates.
+- **`tests/test_resonance.py`** — 5 end-to-end tests.
+
+### Measured (an honest, load-bearing finding — the capacity caveat made real)
+Resonance is correct and generalizes kNN, but its big "free pattern completion" is
+**bounded by our correlated fingerprints**, exactly as the report warned:
+- β→∞, steps=1 → **exactly cosine-kNN** (40/40 agreement; the proven special case).
+- steps=1, any β → identical top-1 to kNN (no harm, no gain).
+- steps 2–3 at high β → small genuine gain on degraded cues (109/108 vs 107/120).
+- **many steps at low β → COLLAPSE toward the centroid** (32/120 vs kNN 119/120).
+- In a *separable* regime, settling completes a noisy cue 95–100% of the time; on raw
+  correlated fingerprints it does not. → the completion win is **GATED on the same fix
+  as composition** (random-projection to a higher-D near-orthogonal space).
+
+### Defaults / posture
+`recall_resonant` defaults to **steps=1** (safe: == kNN ranking). Low-β many-step
+settling is documented as experimental in `resonance.py` (LIMITATION) until the capacity
+experiment lands. Verified: `pytest` → **31 passed** (26 prior + 5 new).
+
+---
+
 ## [0.4.0] — 2026-06-24 — Phase 2: the GDF phase complement (REPRESENT upgrade)
 
 **Goal:** the cheapest representation win from `frequency_memory__UNIFIED.md` (P1) —
