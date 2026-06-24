@@ -12,14 +12,16 @@ from .fingerprint import cosine, fingerprint
 from .format import SituationCert, decode, encode
 from .index import SituationIndex
 from .state import PerceptionFrame, PerceptionState, RawState, StateVector
-from .store import Retrieved, SituationMemory
+from .sense import (EmbeddingFrame, MeaningEncoder, MeaningState, Sense,
+                    meaning_impression, reflex_impression)
+from .store import Retrieved, SituationMemory, TwofoldMemory
 from .archive import HotColdMemory, HotIndex, HotColdStats
 from .streaming import StreamingEngramWriter, WriterStats
 from .confidence import ConfidenceLog
 from .perception import FingerprintWorker, MockPerceptionSource, PerceptionSource, recall_summary
 from .query import SituationClassifier, filter_retrieved
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "fingerprint", "cosine",
@@ -27,6 +29,9 @@ __all__ = [
     "SituationIndex",
     "StateVector", "RawState", "PerceptionState", "PerceptionFrame",
     "SituationMemory", "Retrieved",
+    # phase 1 (two-rate hybrid — the two senses)
+    "Sense", "EmbeddingFrame", "MeaningState", "MeaningEncoder",
+    "reflex_impression", "meaning_impression", "TwofoldMemory",
     # phase 1B
     "HotIndex", "HotColdMemory", "HotColdStats",
     "StreamingEngramWriter", "WriterStats", "ConfidenceLog",

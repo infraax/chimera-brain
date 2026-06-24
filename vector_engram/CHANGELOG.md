@@ -7,6 +7,53 @@ Format: reverse-chronological. Each entry = what changed + why + how it was veri
 
 ---
 
+## [0.3.0] — 2026-06-24 — Phase 1: the two senses (two-rate hybrid)
+
+**Goal:** make ENGRAM remember each moment in two registers — a fast instinctive
+**REFLEX** sense (raw fused sensation → fingerprint, on-robot) and a slower **MEANING**
+sense (learned encoder embeddings → fingerprint, box). Decided after the frequency +
+OSS reports: the reflex register keeps the Anki virtues (deterministic, training-free,
+degrades gracefully); the meaning register is where recognition/identity become
+meaningful (theta/gamma + chimera L1/L2 made concrete). Naming follows Anki's
+creature-modelling style — faculties (`feel`, `recognize`), not data structures.
+
+### Added
+- **`sense.py`** — the two sensing faculties:
+  - `Sense` enum (REFLEX / MEANING) — stamped on every trace so a recalled memory knows
+    which sense formed it; the two senses are separate cosine spaces, never compared.
+  - `EmbeddingFrame` / `MeaningState` — MEANING-sense analogues of
+    `PerceptionFrame`/`PerceptionState` (a window of *recognised* embedding frames).
+  - `reflex_impression()` / `meaning_impression()` — form a fingerprint from a moment;
+    identical FFT math, different substrate (raw sensation vs embeddings).
+  - `REFLEX_REPR` / `MEANING_REPR` representation-ids (the payload-version tag).
+  - **Hooks (documented, not wired):** `MeaningEncoder` protocol = the seam where the
+    real encoders (MobileCLIP / Depth Anything V2 / emotion2vec / TitaNet) attach; plus
+    a note that the COMPOSE layer (HRR identity bundles) is **gated** on the VSA-capacity
+    experiment and must not be built before it passes.
+- **`store.py` — `TwofoldMemory`** — one creature, two registers (`.reflex`, `.meaning`);
+  `feel()` / `recognize()` to lay down a trace, `recall_reflex()` / `recall_meaning()`
+  to retrieve. Meaning register optional (`meaning_dim=None` → brainstem-only creature
+  that still feels & recalls — graceful degradation). `SituationMemory` generalized to
+  carry its `sense` + `repr_id` + `impression` fn (defaults = the original REFLEX path).
+- **`synth.py`** — `make_meaning()` + `DE` (generated embedding corpus, real pipeline) to
+  exercise the meaning path the way `make_situation()` exercises the reflex path.
+- **`tests/test_two_rate.py`** — 6 end-to-end tests (meaning recall through noise, EGRV v2
+  round-trip, two registers kept separate, reflex-only graceful degradation).
+
+### Changed
+- **EGRV format → v2.** Certificates now carry `sense` (uint8) + `repr_id` (string) — the
+  **envelope/payload split**: the envelope (timestamps/labels/sense/…) is stable; the
+  fingerprint payload may evolve, tagged by `repr_id`, without a format break. `decode()`
+  is **backward-compatible** — legacy v1 certs read as REFLEX / "rfft.raw.v1". (Hand-rolled
+  forward-compat; bridge until EGRV moves to FlatBuffers per the ENGRAM-rewrite report.)
+
+### Verified
+- `pytest vector_engram/tests/` → **22 passed** (16 prior regressions + 6 new), 3.3 s.
+- Manual end-to-end: `TwofoldMemory.feel`/`recognize` write to the right register;
+  `recall_*` returns the correct sense + repr_id; legacy v1 decode confirmed.
+
+---
+
 ## [0.2.0] — 2026-06-23 — Phases 1B + 1C + 2: hardening, perception worker, query
 
 **Goal:** finish the ENGRAM adjustments end-to-end before moving on — continuous

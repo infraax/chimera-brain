@@ -54,6 +54,35 @@ def make_situation(person: str, activity: str, place: str, *, rng: np.random.Gen
     return st
 
 
+# ---- MEANING-sense corpus (generated embeddings, real pipeline) ------------ #
+# De = the fused embedding dim the box-side encoders would emit (vision+audio+affect
+# concatenated). Distinct from the raw modality dims above. A real build would set this
+# to the actual encoder output width; here it just exercises the meaning path.
+DE = 48
+
+
+def make_meaning(person: str, activity: str, place: str, *, rng: np.random.Generator,
+                 T: int = 8, noise: float = 0.15):
+    """A short window of *recognised* embedding frames for a situation.
+
+    Mirrors make_situation but in embedding space: a stable per-situation latent +
+    gentle trend + per-frame noise, so the meaning fingerprint must recover identity
+    through noise exactly as the reflex one does. Embeddings are noisier-tolerant, so
+    default noise is lower (encoders already abstract away sensor jitter).
+    """
+    from .sense import EmbeddingFrame, MeaningState
+
+    key = situation_key(person, activity, place)
+    r = np.random.default_rng(_seed("meaning|" + key))
+    mean = r.normal(0, 1, size=DE)
+    trend = r.normal(0, 0.12, size=DE)
+    st = MeaningState(person=person, activity=activity, place=place)
+    for t in range(T):
+        emb = mean + trend * (t - T / 2) + rng.normal(0, noise, size=DE)
+        st.window.append(EmbeddingFrame(embedding=emb))
+    return st
+
+
 def build_corpus(n_prototypes: int, copies: int, *, seed: int = 0, T: int = 8,
                  noise: float = 0.25) -> tuple[list[PerceptionState], list[str]]:
     """Return (states, keys): n_prototypes distinct situations, each repeated `copies`
