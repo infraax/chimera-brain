@@ -7,6 +7,42 @@ Format: reverse-chronological. Each entry = what changed + why + how it was veri
 
 ---
 
+## [0.4.0] — 2026-06-24 — Phase 2: the GDF phase complement (REPRESENT upgrade)
+
+**Goal:** the cheapest representation win from `frequency_memory__UNIFIED.md` (P1) —
+restore the temporal-ordering information that amplitude-only fingerprints discard.
+Amplitude answers "how much each feature is changing"; it is BLIND to *when* in the
+window the change happened (a window and its time-reverse share an identical amplitude
+spectrum). The group-delay function (GDF, the phase derivative) restores that for ~free.
+Implemented as a **selectable representation** (opt-in), tagged via `repr_id`, so the
+default behaviour and existing archives are untouched until we choose to flip it.
+
+### Added
+- **`fingerprint.py` — `fingerprint_gdf()`** — amplitude blocks + an L2-normalized
+  group-delay complement, using the product-spectrum form (`X=rFFT(x)`, `Y=rFFT(n·x)`,
+  `GD=(Xr·Yr+Xi·Yi)/|X|²`) that avoids phase unwrapping (robust in noise). Amplitude
+  blocks come first, so the leading half is byte-identical to `fingerprint()`. Dim doubles.
+- **`sense.py`** — `reflex_impression_gdf` / `meaning_impression_gdf`; the
+  `REFLEX_GDF_REPR` / `MEANING_GDF_REPR` tags; `impression_for(sense, representation)`
+  (maps "raw"|"gdf" → faculty + repr_id) and `fingerprint_dim(feature_dim, freqs,
+  representation)` so callers never hand-compute the fingerprint length.
+- **`store.py`** — `TwofoldMemory(..., representation="raw"|"gdf")` picks the faculties,
+  repr_ids, and (caller-sized) dims for both registers.
+- **`tests/test_repr_gdf.py`** — 4 end-to-end tests.
+
+### Verified
+- The killer property, measured: amplitude `cos(window, time-reverse) = 1.000` (blind);
+  GDF `cos = 0.21` (clearly distinguishes). dim 80→160, deterministic.
+- `pytest vector_engram/tests/` → **26 passed** (22 prior + 4 new), <1 s.
+- GDF `TwofoldMemory` recalls situation identity through noise end-to-end in both registers.
+
+### Not yet (deliberate)
+- `gdf` is **opt-in**; the default stays `raw` until we run the report's Experiment #1
+  (recall@1 on a hard noisy/warped corpus) and decide the win justifies the doubled dim.
+  Next representation tags reserved: `scatter.*`, `multiscale.*`.
+
+---
+
 ## [0.3.0] — 2026-06-24 — Phase 1: the two senses (two-rate hybrid)
 
 **Goal:** make ENGRAM remember each moment in two registers — a fast instinctive

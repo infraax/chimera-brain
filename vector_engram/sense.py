@@ -33,7 +33,7 @@ from typing import Protocol, runtime_checkable
 
 import numpy as np
 
-from .fingerprint import DEFAULT_FREQS, fingerprint
+from .fingerprint import DEFAULT_FREQS, fingerprint, fingerprint_gdf
 from .state import PerceptionState, StateVector
 
 
@@ -56,6 +56,10 @@ class Sense(IntEnum):
 # "scatter.*", "multiscale.*" as the frequency-report upgrades land.
 REFLEX_REPR = "rfft.raw.v1"     # raw fused sensation, |rFFT| amplitude {0,1}
 MEANING_REPR = "rfft.embed.v1"  # fused encoder embeddings, |rFFT| amplitude {0,1}
+# Phase 2 — the GDF (group-delay / phase) complement. Same substrate, +temporal-order
+# sensitivity (see fingerprint_gdf). Dim doubles. Opt-in until we flip the default.
+REFLEX_GDF_REPR = "rfft+gdf.raw.v1"
+MEANING_GDF_REPR = "rfft+gdf.embed.v1"
 
 
 # ---- the MEANING sense: a window of *recognised* frames -------------------- #
@@ -131,6 +135,51 @@ def meaning_impression(state: StateVector, freqs: tuple[int, ...] = DEFAULT_FREQ
     sensation) and that it runs slower, in the cortex (the box).
     """
     return fingerprint(state.frames(), freqs)
+
+
+# Phase 2: the same two faculties, but with the GDF phase complement (temporal order).
+def reflex_impression_gdf(state: StateVector, freqs: tuple[int, ...] = DEFAULT_FREQS) -> np.ndarray:
+    """REFLEX sense with the group-delay complement — feels *when*, not just *how much*."""
+    return fingerprint_gdf(state.frames(), freqs)
+
+
+def meaning_impression_gdf(state: StateVector, freqs: tuple[int, ...] = DEFAULT_FREQS) -> np.ndarray:
+    """MEANING sense with the group-delay complement."""
+    return fingerprint_gdf(state.frames(), freqs)
+
+
+# ---- representation selection (sense × representation -> faculty + tag + dim) -- #
+# Keeps the store generic: it just holds an impression callable + a repr_id. This maps
+# a human choice ("raw" | "gdf") to the right pair for each sense, and gives the
+# fingerprint dim so callers don't hand-compute it.
+_REPRESENTATIONS = {
+    # representation -> (reflex_repr, meaning_repr, reflex_fn, meaning_fn, dim_mult_per_freq)
+    "raw": (REFLEX_REPR, MEANING_REPR, reflex_impression, meaning_impression, 1),
+    "gdf": (REFLEX_GDF_REPR, MEANING_GDF_REPR, reflex_impression_gdf, meaning_impression_gdf, 2),
+}
+
+
+def impression_for(sense: Sense, representation: str = "raw"):
+    """Return (impression_fn, repr_id) for a sense + representation choice."""
+    try:
+        rrepr, mrepr, rfn, mfn, _ = _REPRESENTATIONS[representation]
+    except KeyError:
+        raise ValueError(f"unknown representation {representation!r}; "
+                         f"choices: {sorted(_REPRESENTATIONS)}")
+    if Sense(sense) == Sense.REFLEX:
+        return rfn, rrepr
+    return mfn, mrepr
+
+
+def fingerprint_dim(feature_dim: int, freqs: tuple[int, ...] = DEFAULT_FREQS,
+                    representation: str = "raw") -> int:
+    """The fingerprint length for a given feature dim, #freqs, and representation.
+
+    raw  -> feature_dim * len(freqs)
+    gdf  -> feature_dim * len(freqs) * 2   (amplitude blocks + group-delay blocks)
+    """
+    mult = _REPRESENTATIONS[representation][4]
+    return feature_dim * len(freqs) * mult
 
 
 # ---- HOOK (not yet wired): the encoder seam ------------------------------- #

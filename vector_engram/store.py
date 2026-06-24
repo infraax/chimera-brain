@@ -152,25 +152,33 @@ class TwofoldMemory:
 
     The MEANING register is only created if `meaning_dim` is given (you don't pay for
     the cortex if you only have a brainstem).
+
+    `representation` selects how a moment becomes a trace: "raw" (amplitude only, the
+    default) or "gdf" (amplitude + the group-delay phase complement — temporal-order
+    aware, dim doubles). Use `vector_engram.fingerprint_dim()` to size reflex_dim/
+    meaning_dim for the chosen representation.
     """
 
     def __init__(self, reflex_dim: int, *, meaning_dim: int | None = None,
                  archive_dir: str | None = None, backend: str = "hnsw",
-                 freqs: tuple[int, ...] = (0, 1), **index_kw):
+                 freqs: tuple[int, ...] = (0, 1), representation: str = "raw", **index_kw):
         # local imports keep the sense vocabulary in one place + avoid a cycle
-        from .sense import MEANING_REPR, REFLEX_REPR, Sense, meaning_impression, reflex_impression
+        from .sense import Sense, impression_for
 
+        self.representation = representation
+        r_fn, r_repr = impression_for(Sense.REFLEX, representation)
         reflex_dir = os.path.join(archive_dir, "reflex") if archive_dir else None
         self.reflex = SituationMemory(
             reflex_dim, archive_dir=reflex_dir, backend=backend, freqs=freqs,
-            sense=Sense.REFLEX, repr_id=REFLEX_REPR, impression=reflex_impression, **index_kw)
+            sense=Sense.REFLEX, repr_id=r_repr, impression=r_fn, **index_kw)
 
         self.meaning: SituationMemory | None = None
         if meaning_dim is not None:
+            m_fn, m_repr = impression_for(Sense.MEANING, representation)
             meaning_dir = os.path.join(archive_dir, "meaning") if archive_dir else None
             self.meaning = SituationMemory(
                 meaning_dim, archive_dir=meaning_dir, backend=backend, freqs=freqs,
-                sense=Sense.MEANING, repr_id=MEANING_REPR, impression=meaning_impression, **index_kw)
+                sense=Sense.MEANING, repr_id=m_repr, impression=m_fn, **index_kw)
 
     # ---- lay down a memory -------------------------------------------------- #
     def feel(self, perception, *, persist: bool = True) -> int:
