@@ -8,15 +8,25 @@ ENGRAM_FOR_VECTOR.md: robot_id, timestamp, activity, place, person, emotion[4].
 
 Layout (little-endian):
   magic        4   b"EGRV"
-  version      1   uint8 (=1)
+  version      1   uint8 (=2)
   dim          2   uint16   (length of the fingerprint vector)
   n_freqs      1   uint8    (freqs used, informational)
+  sense        1   uint8    (Sense: 0=REFLEX, 1=MEANING)              [v2+]
   timestamp    8   float64  (unix seconds)
   emotion     16   4x float32 (valence-ish summary: first 4 emotion dims)
   --- variable, each str = uint16 length + utf-8 bytes ---
+  repr_id,                                                            [v2+]
   robot_id, source_id, person, activity, place, situation_key
   --- vector ---
   vec        dim*2  float16
+
+Versioning (the envelope/payload split):
+  The *envelope* above is stable. The fingerprint *payload* may evolve; `repr_id`
+  names which representation produced `vec` ("rfft.raw.v1", "rfft.embed.v1", later
+  "scatter.*"…), so a new representation joins without a format break. `decode` still
+  reads legacy v1 certs (no sense/repr_id) — they are treated as REFLEX / "rfft.raw.v1".
+  This hand-rolled forward-compat is the bridge until EGRV moves to FlatBuffers
+  (see 09_engram_rewrite__1.0_geodesic.md, V5) for true cross-language codegen.
 """
 from __future__ import annotations
 
@@ -27,7 +37,8 @@ from dataclasses import dataclass, field
 import numpy as np
 
 MAGIC = b"EGRV"
-VERSION = 1
+VERSION = 2          # current writer version
+LEGACY_VERSIONS = (1,)  # versions decode still accepts
 
 
 @dataclass
@@ -42,6 +53,10 @@ class SituationCert:
     emotion: np.ndarray = field(default_factory=lambda: np.zeros(4, np.float32))
     timestamp: float = field(default_factory=time.time)
     n_freqs: int = 2
+    # v2: which sense formed this trace + which representation produced `vec`.
+    # Defaults make a bare SituationCert(vec=…) a legacy-equivalent REFLEX trace.
+    sense: int = 0                       # Sense.REFLEX
+    repr_id: str = "rfft.raw.v1"
 
 
 def _put_str(buf: bytearray, s: str) -> None:
@@ -70,8 +85,10 @@ def encode(cert: SituationCert) -> bytes:
     buf += struct.pack("<B", VERSION)
     buf += struct.pack("<H", int(vec.shape[0]))
     buf += struct.pack("<B", int(cert.n_freqs))
+    buf += struct.pack("<B", int(cert.sense))              # v2
     buf += struct.pack("<d", float(cert.timestamp))
     buf += struct.pack("<4f", *emo4.tolist())
+    _put_str(buf, cert.repr_id)                            # v2 (first string)
     for s in (cert.robot_id, cert.source_id, cert.person, cert.activity, cert.place, cert.situation_key):
         _put_str(buf, s)
     buf += vec.tobytes()  # fp16
@@ -83,12 +100,21 @@ def decode(data: bytes) -> SituationCert:
         raise ValueError("bad magic; not an EGRV certificate")
     off = 4
     (version,) = struct.unpack_from("<B", data, off); off += 1
-    if version != VERSION:
+    if version != VERSION and version not in LEGACY_VERSIONS:
         raise ValueError(f"unsupported EGRV version {version}")
     (dim,) = struct.unpack_from("<H", data, off); off += 2
     (n_freqs,) = struct.unpack_from("<B", data, off); off += 1
+    # v2 inserts `sense` here; v1 had no such field.
+    if version >= 2:
+        (sense,) = struct.unpack_from("<B", data, off); off += 1
+    else:
+        sense = 0  # legacy traces are REFLEX
     (ts,) = struct.unpack_from("<d", data, off); off += 8
     emo4 = np.array(struct.unpack_from("<4f", data, off), dtype=np.float32); off += 16
+    if version >= 2:
+        repr_id, off = _get_str(data, off)
+    else:
+        repr_id = "rfft.raw.v1"  # legacy default representation
     robot_id, off = _get_str(data, off)
     source_id, off = _get_str(data, off)
     person, off = _get_str(data, off)
@@ -99,5 +125,5 @@ def decode(data: bytes) -> SituationCert:
     return SituationCert(
         vec=vec, robot_id=robot_id, source_id=source_id, person=person,
         activity=activity, place=place, situation_key=situation_key,
-        emotion=emo4, timestamp=ts, n_freqs=n_freqs,
+        emotion=emo4, timestamp=ts, n_freqs=n_freqs, sense=sense, repr_id=repr_id,
     )

@@ -1,0 +1,54 @@
+// engram.fbs — the EGRV situational-certificate CONTRACT (FlatBuffers).
+//
+// THE Day-1 artifact (09_engram_rewrite__1.0_geodesic.md, V5): commit the schema before
+// any C++/Go is written — it is the seam all three languages generate from
+// (`flatc --cpp --go --python engram.fbs`). Anki's own animation `.bin` assets are
+// FlatBuffers, so this is the Anki way by direct precedent, not analogy.
+//
+// The Python package `vector_engram.format` (EGRV v2) is the EXECUTABLE REFERENCE for this
+// schema; golden vectors will pin C++/Go output to it (≤1e-5 for the vector, bit-exact for
+// the envelope). Field set mirrors `vector_engram/format.py` (sense + repr_id = the
+// envelope/payload split: the envelope is stable; the fingerprint payload evolves via
+// `repr_id` with no format break).
+
+namespace VectorBrain.Engram;
+
+/// Which sense formed the trace (two-rate hybrid). Separate cosine spaces; never compared.
+enum Sense : ubyte { Reflex = 0, Meaning = 1 }
+
+/// Encoding of the fingerprint `data` bytes. fp16 is storage on ARMv7 (compute in f32);
+/// native fp16/int8 compute arrives with Vector-3.0-class silicon.
+enum Precision : ubyte { F32 = 0, F16 = 1, I8 = 2 }
+
+/// One situational fingerprint + its embodied/lifelong metadata.
+table SituationCert {
+  timestamp_us  : uint64;                       // unix microseconds
+  sense         : Sense = Reflex;
+  repr_id       : string;                       // payload tag: "rfft.raw.v1" | "rfft+gdf.v1" | "scatter.*" …
+  dim           : uint16;                        // fingerprint length (elements)
+  n_freqs       : ubyte = 2;
+  precision     : Precision = F16;
+  data          : [ubyte] (force_align: 16);    // the fingerprint, `precision`-encoded, 16B-aligned for NEON
+  // --- situational metadata (rides along into the .eng cert) ---
+  robot_id      : string;
+  source_id     : string;
+  person        : string;
+  activity      : string;
+  place         : string;
+  situation_key : string;
+  emotion       : [float];                       // 4-float affect summary (valence-ish)
+  crc32         : uint32;                         // integrity of `data` (scan-free check)
+}
+
+/// A store of certs (one .eng archive shard). schema_hash catches version drift.
+table MemoryStore {
+  version     : uint32 = 2;
+  schema_hash : uint64;                          // hash of this .fbs
+  created_us  : uint64;
+  label_ns    : string;                          // identity namespace / robot id
+  certs       : [SituationCert];
+}
+
+root_type MemoryStore;
+file_identifier "EGRV";
+file_extension "eng";
