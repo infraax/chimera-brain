@@ -298,3 +298,21 @@ https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_brain/ARCHITECTURE.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/curation/vector_brain_stack.md
 ```
+
+---
+
+## 8. Box-sized prompts (≤500 chars — for NotebookLM's "customize" box)
+
+NotebookLM's customize box caps at ~500 characters, so the full §5 prompts won't paste. Use these
+condensed versions instead — they assume the §4/§7 sources (incl. this briefing) are already loaded,
+which is where the hosts get the detail. Each is verified under 500 chars; paste verbatim.
+
+### ▶ Part 1 — box version (the mind)
+```
+Part 1 of 2. ~45-min deep-dive. Two hosts who disagree: an enthusiast vs a skeptic who keeps asking 'is this real, or embedding math in poetic clothes?' Topic: chimera-brain's mind — MEMORY AS FREQUENCY. Cover: a moment→Fourier fingerprint; music as memory-grammar; two senses ('feel' vs 'recognize'); personality as a composed self-shape recalled by resonance (HRR+Hopfield). Dig into the honest negative results. Keep the real science; reject 432Hz/Schumann mysticism. Tease Part 2.
+```
+
+### ▶ Part 2 — box version (the body & the build)
+```
+Part 2 of 2 (recap Part 1 in 60s, then move on). ~35-min talk, same two hosts — enthusiast vs rigorous skeptic, real back-and-forth. Topic: giving chimera-brain a BODY and shipping it. Cover: real 2018 Vector vs a clean-sheet 'Vector 3.0' (cameras, LiDAR, tactile thumb); the Anki Way doctrine; extended senses + the privacy/creepiness debate; the C++/Go contract-first runtime (wisdom or over-engineering?); fusing conflicting AI research. Keep the honesty boundary. End on: should it exist?
+```
