@@ -210,3 +210,38 @@ and curious, but keep it honest — note where the team deliberately separates r
 - Names/terms to get right: **ENGRAM** (the memory system), **the two senses** (reflex/feel &
   meaning/recognize), **the self-frequency / COMPOSE**, **the Anki Way**, **the honesty
   boundary**, **Vector 3.0** (the future hardware).
+
+---
+
+## 7. Raw source URLs (ready to paste into NotebookLM)
+
+> These resolve **only if the repo/branch is public**. If `infraax/chimera-brain` is private,
+> NotebookLM can't authenticate — download the `.md` files and upload them instead.
+> Branch = `claude/multi-repo-architecture-npf6jv` (if this gets merged to the default branch,
+> swap `refs/heads/claude/multi-repo-architecture-npf6jv` → `refs/heads/main`).
+
+**Core set (best for a frequency/ENGRAM episode):**
+```
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/NOTEBOOKLM_BRIEFING.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/DEXTER_CONTEXT.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/SOLVING_AI_MEMORY_WITH_FREQUENCY_AND_SYMPHONY.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/MUSIC_AND_FREQUENCY_CONCEPTS.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/ANKI_WAY.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/CHIMERA_CONVERGENCE_MAP.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/DEEP_UNDERSTANDING_CONCEPT_01.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/ENGRAM_FOR_VECTOR.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_engram/CHANGELOG.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_engram/CAPACITY_RESULTS.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/frequency_memory__UNIFIED.md
+```
+
+**Extended set (hardware future + production runtime + the other research):**
+```
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/VECTOR_3_HARDWARE_GEODESIC.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_brain/ARCHITECTURE.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/cutting_edge_oss__UNIFIED.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/external_sensor_array__UNIFIED.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/physical_attachments__UNIFIED.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_engram/sense.py
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_engram/compose.py
+```
