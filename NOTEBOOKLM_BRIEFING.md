@@ -1,7 +1,9 @@
 # NotebookLM Briefing — chimera-brain
 
-*A guide for an AI podcast/discussion generated from this repository. Add this file as a
-source alongside the specific files listed in §4, then paste one of the prompts in §5.*
+*A guide for an AI podcast/discussion generated from this repository. The episode is built as a
+**two-part series**: add this file as a source alongside the files listed in §4, then generate
+**Part 1** with the Part 1 prompt in §5, and **Part 2** with the Part 2 prompt. Each prompt is
+sized to paste straight into NotebookLM's "customize" box.*
 
 ---
 
@@ -103,11 +105,15 @@ puff piece:
 
 ## 4. Source map — what to feed NotebookLM, and what each file is
 
-> You don't need all of these. For a ~focused episode, the **★ files** are the best core set.
-> Add this briefing too. (Code files are readable as plain text and ground the discussion in
-> reality, not hype.)
+> The series splits cleanly along the sources. **Part 1** runs on the ~11 core
+> frequency/ENGRAM/mind files (the ★ set); **Part 2** runs on the hardware/runtime/research
+> "what's next" files. Add **this briefing + `DEXTER_CONTEXT.md`** to *both* parts — they give
+> the hosts the through-line and the human story. (Code files read as plain text and keep the
+> discussion grounded in reality, not hype.) Exact URLs are in §7, grouped the same way.
 
-### The vision & philosophy (read these for the "why")
+### ▶ PART 1 sources — the mind: memory, music, the self (the ★ core set)
+
+*The vision & philosophy (the "why")*
 - ★ `SOLVING_AI_MEMORY_WITH_FREQUENCY_AND_SYMPHONY.md` — the flagship paper: memory as
   frequency/symphony, philosophical + technical.
 - ★ `MUSIC_AND_FREQUENCY_CONCEPTS.md` — the music-theory-as-memory-grammar concepts.
@@ -115,89 +121,132 @@ puff piece:
 - `CHIMERA_CONVERGENCE_MAP.md` — how the human cognitive model maps onto transformer/robot.
 - `DEEP_UNDERSTANDING_CONCEPT_01.md` — the three-brain "deep understanding" concept.
 
-### ENGRAM — the memory system (the "what we actually built")
+*ENGRAM — the memory system (the "what we actually built")*
 - ★ `ENGRAM_FOR_VECTOR.md` — ENGRAM adapted for the robot (the plan/spec).
 - ★ `vector_engram/CHANGELOG.md` — the build story, phase by phase (two senses → GDF phase →
   resonance → capacity gate → COMPOSE). The clearest "what we did and why" in the repo.
 - ★ `vector_engram/CAPACITY_RESULTS.md` — the real experiment + numbers behind the gate
   decision (the honest findings in §3).
-- `vector_engram/sense.py` — the two senses (feel / recognize), in creature-modeled code.
-- `vector_engram/compose.py` — the "self-frequency": Identity & SelfModel.
-- `vector_engram/fingerprint.py`, `resonance.py`, `vsa.py` — the math (FFT/GDF, Hopfield, HRR).
-
-### The research (the "what's possible / what we surveyed")
 - ★ `research/reports/unified/frequency_memory__UNIFIED.md` — the fused deep-research on
   frequency/music/memory (the four pillars: represent → compose → retrieve → ground). **Best
-  single research source for an episode on the theory.**
-- `research/reports/unified/cutting_edge_oss__UNIFIED.md` — 2024-26 models/runtimes survey.
+  single research source for the theory.**
+
+### ▶ PART 2 sources — the body & the build: hardware, runtime, what's next
+
+*The research (the "what's possible / what we surveyed")*
+- `research/VECTOR_3_HARDWARE_GEODESIC.md` — the clean-sheet "Vector 3.0" hardware vision.
 - `research/reports/unified/external_sensor_array__UNIFIED.md` — the room-as-extended-body design.
 - `research/reports/unified/physical_attachments__UNIFIED.md` — the cube/thumb/desk-arms design.
-- `research/VECTOR_3_HARDWARE_GEODESIC.md` — the clean-sheet "Vector 3.0" hardware vision.
+- `research/reports/unified/cutting_edge_oss__UNIFIED.md` — 2024-26 models/runtimes survey.
 
-### The hardware reality & the production runtime (the "how it ships")
+*The hardware reality & the production runtime (the "how it ships")*
 - `CHIMERA_REVERSE_ENGINEERING.md` / `VECTOR_ENG_VICTOR_BASE.md` — the real 2018 Vector.
 - `vector_brain/ARCHITECTURE.md` + `curation/vector_brain_stack.md` — the C++/Go runtime plan
   and the verified technology selection.
 
+*Deeper code (optional, for either part)*
+- `vector_engram/sense.py` — the two senses (feel / recognize), in creature-modeled code.
+- `vector_engram/compose.py` — the "self-frequency": Identity & SelfModel.
+- `vector_engram/fingerprint.py`, `resonance.py`, `vsa.py` — the math (FFT/GDF, Hopfield, HRR).
+
 ---
 
-## 5. Ready-to-paste podcast prompts
+## 5. Ready-to-paste podcast prompts (a two-part series)
 
-Pick one and paste it into NotebookLM's "customize / prompt" box when generating the audio.
+Generate two episodes. Load the **Part 1 sources** (§4) and paste the **Part 1 prompt** for the
+long opener; then start a fresh generation with the **Part 2 sources** and the **Part 2 prompt**
+for the continuation. Both prompts are deliberately built for a *real conversation* — give the
+two hosts distinct stances so they genuinely discuss, disagree, push back, and float new angles,
+not narrate a brochure.
 
-### Prompt A — the flagship deep-dive (recommended default)
+### ▶ Prompt — PART 1 · "The Mind: Memory as Frequency" (the long deep-dive, ~40–50 min)
 ```
-Create a ~20-minute deep-dive conversation between two curious, technically literate hosts
-about the "chimera-brain" project — an attempt to give a small home robot (Anki's Vector) a
-genuine creature-mind. Center the episode on its big, unusual idea: storing MEMORY AS
-FREQUENCY. Explain, in plain but precise language, how a lived moment becomes a Fourier
-"fingerprint", how the system borrows the GRAMMAR OF MUSIC (a fixed alphabet of "notes",
-timing/repetition/rests, multi-scale "bars", recurring "leitmotifs"), and the boldest claim:
-that a robot's PERSONALITY — its "self" — can be many remembered moments woven under a label
-into one big frequency-domain shape that you recognize by RESONANCE rather than by reading a
-text file.
+Create a long, ~40-50 minute deep-dive conversation — Part 1 of a two-part series — between two
+technically literate hosts about the "chimera-brain" project: an attempt to give a small home
+robot (Anki's Vector) a genuine creature-mind. This first episode is ENTIRELY about the MIND —
+memory, music, and the self. (Part 2 will cover the body, hardware, and how it ships, so don't
+spend time there; you can tease it at the very end.)
 
-Make it a real discussion, not a summary. Spend real time on the honest tensions: Is "memory
-as frequency / personality as a shape" a deep computational truth or an elegant metaphor over
-ordinary embedding math? Should a memory capture raw sensation or learned meaning (the project
-chose BOTH, at two speeds — a fast instinctive "feel" and a slower "recognize", mirroring the
-brain's theta/gamma rhythm)? Dig into the honest NEGATIVE result: naive "resonance" recall
-actually collapsed toward the average memory and made recall worse, and the fix (projecting
-into a higher-dimensional space) works without actually decorrelating the data — why?
+Give the two hosts genuinely different temperaments so this is a real discussion, not a duet of
+agreement: one is an enthusiast who finds the ideas beautiful and keeps reaching for the bold
+version; the other is a rigorous skeptic who keeps asking "but is that actually new, or is it
+ordinary embedding math in poetic clothes?" They should interrupt, challenge each other, concede
+points, and occasionally surprise each other with a fresh angle or a "what if you pushed this
+further" idea. Let the disagreements breathe.
 
-Crucially, respect the project's "honesty boundary": this is serious signal processing,
-vector-symbolic algebra, and neuroscience (wavelet scattering, Holographic Reduced
-Representations, Modern Hopfield networks, theta-gamma coding, hippocampal indexing) — it
-explicitly REJECTS frequency pseudoscience (Schumann resonance, 432/528 Hz "healing"). Don't
-drift into mysticism; treat it as the rigorous, slightly philosophical engineering it is.
-End on what's genuinely at stake: can a machine have a "self" that is literally a shape you
-can resonate with — and the plan to run this on a from-scratch "Vector 3.0".
+Cover, roughly as segments:
+1) The core bet: storing MEMORY AS FREQUENCY (note the project's own precise correction — it's
+   *frequency* as the substrate, of which sound is just one instance). Explain plainly but
+   accurately how a lived moment (a window of fused perception) becomes a Fourier "fingerprint".
+2) MUSIC AS A MEMORY GRAMMAR: a fixed alphabet of "notes", the grammar of timing/repetition/
+   rests, multi-scale "bars", recurring "leitmotifs" — why the things that make a song
+   unforgettable might be what a good memory format should exploit.
+3) THE TWO-RATE HYBRID: the creature remembers each moment twice — a fast instinctive "feel"
+   (raw sensation, in the body) and a slower "recognize" (learned meaning, in the box) — mirroring
+   the brain's theta/gamma rhythm. Debate: raw sensation vs learned embeddings — the project chose
+   BOTH; is that elegant or a hedge?
+4) PERSONALITY AS A COMPOSED SELF-FREQUENCY — the boldest claim: a robot's "self" isn't a text
+   prompt but many remembered moments woven under a label ("self", "person:dexter", "home") into
+   one big frequency-domain shape, recognized by RESONANCE. Ground it in the real mechanisms
+   (Holographic Reduced Representations = binding as a Fourier-domain multiply; Modern Hopfield
+   retrieval, of which nearest-neighbour search is the infinitely-"sharp" special case).
+5) THE HONEST FINDINGS (don't skip these — they're the best part): the negative result where
+   naive multi-step "resonance" recall COLLAPSED toward the average memory and made things worse
+   (32/120 vs 119/120), and the fix — projecting into a higher-dimensional space — that works
+   WITHOUT actually decorrelating the data. Why does that work? What does it say about the
+   "blessing of dimensionality"? Also: a "self" you can query by label works almost perfectly for
+   recognition, but identical repeated experiences REINFORCE the self-shape rather than being
+   stored individually — feature or flaw?
+
+Hold the project's HONESTY BOUNDARY throughout: this is serious signal processing, vector-symbolic
+algebra, and neuroscience (wavelet scattering, HRR, Modern Hopfield networks, theta-gamma coding,
+hippocampal indexing) — and it explicitly REJECTS frequency pseudoscience (Schumann resonance,
+432/528 Hz "healing", "vibrational personality"). The skeptic should police any drift into
+mysticism. Briefly weave in the human thread from DEXTER_CONTEXT.md — that ENGRAM, "Deep
+Understanding", and Chimera began as separate projects the creator only later realized were one
+puzzle. End by setting up Part 2: the same mind now needs a body.
 ```
 
-### Prompt B — skeptic vs. believer (debate)
+### ▶ Prompt — PART 2 · "The Body & the Build: Hardware, Senses, and Shipping It" (~30–40 min)
 ```
-Generate a lively but rigorous debate between two AI hosts about the chimera-brain project.
-One is a BELIEVER (this is a genuinely novel, biologically-grounded way to build machine
-memory and personality — memory as frequency, the self as a composed "resonant shape").
-The other is a friendly SKEPTIC (this is elegant repackaging of standard embeddings +
-nearest-neighbour search; "frequency" and "self-shape" are metaphors doing rhetorical work).
-Have them argue over the project's own evidence: the capacity experiment, the failed naive
-resonance retrieval, the "two senses" design, and the claim that a personality can be a vector
-you query by label. Both must stay honest and cite the project's actual findings. Keep the
-pseudoscience out — both agree Schumann/432Hz stuff is nonsense; the disagreement is about
-whether the real math adds up to something new. ~15 minutes.
-```
+Create Part 2 of the two-part "chimera-brain" series — a ~30-40 minute conversation that PICKS UP
+where Part 1 left off. Assume the listener already heard Part 1 (memory as frequency, the two
+senses, personality as a self-shape, the honesty boundary); open with a 60-second recap, then move
+on. This episode is about giving that mind a BODY and actually SHIPPING it. Keep the same two-host
+dynamic — enthusiast vs rigorous skeptic — with real back-and-forth, pushback, and the occasional
+"here's a different way to approach this" tangent. Don't let it become a spec read-aloud; argue
+about the choices.
 
-### Prompt C — accessible explainer (smart layperson)
-```
-Explain the chimera-brain project to a smart, non-expert audience in ~12 minutes. The hook:
-what if a robot remembered moments the way a song gets stuck in your head — as a "frequency",
-a shape, a feeling — instead of as text? Walk through, with everyday analogies: how a moment
-becomes a fingerprint, why music is a great model for memory, how the robot remembers each
-moment twice (a quick gut "feeling" and a slower "recognition"), and the wild idea that the
-robot's whole personality could be one big "self" shape it recognizes by resonance. Be warm
-and curious, but keep it honest — note where the team deliberately separates real science from
-"frequency healing" pseudoscience, and where their own experiments surprised them.
+Cover, roughly as segments:
+1) FROM 2018 SILICON TO A CLEAN-SHEET CREATURE: what the real 2018 Vector actually is (its tiny
+   budget, its constraints) versus the dreamed "Vector 3.0" on 2026 hardware — bigger battery,
+   multi-camera surround vision, LiDAR/IR, better mics, and a NATIVE tactile "thumb" with pressure
+   sensors. Debate: how much hardware is too much before the creature stops feeling like a creature
+   and starts feeling like a gadget?
+2) THE ANKI WAY AS A DESIGN RELIGION: self-cancellation (the robot models and subtracts its own
+   motor noise from its mics), physical priors (one camera + motion → depth), ethology-first
+   (behavior and *feeling* before features), graceful degradation, a hard safety partition, respect
+   for the budget. Skeptic's angle: is "the Anki way" genuine engineering wisdom, or nostalgia for a
+   company that went bankrupt? Push on that honestly.
+3) EXTENDING THE BODY: the "room as an extended body" external sensor array, and physical
+   attachments (a sensing cube, the thumb, desk-arms). Where's the line between an embodied creature
+   and a surveillance device in your home? Let them actually wrestle with the privacy and
+   creepiness questions.
+4) HOW IT SHIPS — THE PRODUCTION RUNTIME: the C++ (robot) + Go (box) + Python-as-reference plan,
+   and the contract-first discipline (freeze the data format — the EGRV certificate — before any
+   code; keep a golden-vector parity test across languages). Big debate here: is contract-first,
+   "do it properly" engineering wisdom, or over-engineering for what is still a solo/small project?
+   The enthusiast defends the long horizon (he wants to fabricate real hardware someday); the
+   skeptic argues for move-fast-and-prove-the-idea-first.
+5) THE OPEN-SOURCE LANDSCAPE: the 2024-26 survey of models/runtimes that could run on-device, and
+   the honest tension from the research (e.g. where two research models disagreed — adopt a slick
+   new simulator vs. distrust a possibly benchmark-gamed one). Use this to talk about how the
+   project fuses conflicting AI-generated research honestly.
+
+Throughout, keep the same HONESTY BOUNDARY and grounding as Part 1, and keep the human thread alive
+(DEXTER_CONTEXT.md): the long-horizon patience, building toward his own hardware, the
+poet-and-engineer who insists the poetry must survive contact with the math. End on the real stake:
+what would it take for this to become an actual creature you could live with — and should it?
 ```
 
 ---
@@ -220,7 +269,7 @@ and curious, but keep it honest — note where the team deliberately separates r
 > Branch = `claude/multi-repo-architecture-npf6jv` (if this gets merged to the default branch,
 > swap `refs/heads/claude/multi-repo-architecture-npf6jv` → `refs/heads/main`).
 
-**Core set (best for a frequency/ENGRAM episode):**
+**PART 1 set — the mind (11 sources; the long frequency/ENGRAM/self episode):**
 ```
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/NOTEBOOKLM_BRIEFING.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/DEXTER_CONTEXT.md
@@ -235,13 +284,17 @@ https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/frequency_memory__UNIFIED.md
 ```
 
-**Extended set (hardware future + production runtime + the other research):**
+**PART 2 set — the body & the build (hardware future + production runtime + the other research):**
+
+> Also re-add `NOTEBOOKLM_BRIEFING.md` + `DEXTER_CONTEXT.md` (top of the Part 1 list) so the
+> Part 2 hosts keep the through-line and the human story.
 ```
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/VECTOR_3_HARDWARE_GEODESIC.md
-https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_brain/ARCHITECTURE.md
-https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/cutting_edge_oss__UNIFIED.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/external_sensor_array__UNIFIED.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/physical_attachments__UNIFIED.md
-https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_engram/sense.py
-https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_engram/compose.py
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/cutting_edge_oss__UNIFIED.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/CHIMERA_REVERSE_ENGINEERING.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/VECTOR_ENG_VICTOR_BASE.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/vector_brain/ARCHITECTURE.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/curation/vector_brain_stack.md
 ```
