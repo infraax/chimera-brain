@@ -9,6 +9,12 @@ consistently — not a generic cute robot. §8 holds the ready-to-paste image pr
 
 > Status: concept design, sketch-derived. Details are deliberately changeable — feasibility tiers
 > in §7 mark what's near-term vs aspirational, in the project's honest spirit.
+>
+> **Canonical hardware now exists.** The Vector 3.0 engineering research came back (V1 + V5–V14):
+> `research/reports/12_vector3_hardware__V1_soc_revision.md` and
+> `research/reports/13_vector3_hardware__V5_V14_full_spec.md`. Where this sketch-derived spec and the
+> engineering reports differ, the reports win on parts (e.g. the brain is an **RK3588S**, not the
+> sketch's RPi5). For accurate renders/blueprints use `NOTEBOOKLM_BENZY_RENDER.md`, which fuses both.
 
 ---
 
@@ -80,8 +86,9 @@ battery in the base), tracks for stability and the signature Anki "tank" charm.
   touch must touch *gently*).
 
 ### 3.5 Brain & power — IMG_4771
-- **Onboard compute: Raspberry Pi 5 / CM5 class** ("big CPU RPi5") — runs the **REFLEX** tier:
-  sensor fusion, fingerprinting, motion, safety. Training-free, deterministic, always-on.
+- **Onboard compute: RK3588S SoM** (Radxa NX5; the sketch said "big CPU RPi5" — the engineering
+  spec settled on the more capable RK3588S with a 6-TOPS NPU) + an **STM32H743** real-time safety
+  MCU. Runs the **REFLEX** tier and on-robot L2/L3: sensor fusion, fingerprinting, motion, safety.
 - **Large battery** in the base — hours of runtime; recharges on the dock.
 - Heavy compute (the LLM, MEANING sense) is deliberately **offloaded to the dock** — keeps the
   robot cool, cheap, and long-lived (respect the budget).
