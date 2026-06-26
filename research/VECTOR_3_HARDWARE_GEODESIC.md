@@ -21,6 +21,11 @@
 > Maas)** + the **open-source firmware `kercre123/victor`**. Every vector below should reason in the
 > arc: **Anki's 2018 choice (TRM) → the constraint that forced it → what 2026 tech now enables → the
 > Vector 3.0 recommendation.**
+>
+> **Concrete design → `research/BENZY_VECTOR_3_DESIGN_SPEC.md`.** This geodesic is the *research
+> brief*; "Benzy" is the sketch-derived **product design** it feeds — the three-body creature
+> (robot + compute-dock + scout drone), the exploded-view component manifest, and the
+> image-generation prompt pack. Findings here should land there.
 
 ---
 

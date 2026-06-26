@@ -135,6 +135,8 @@ puff piece:
 
 *The research (the "what's possible / what we surveyed")*
 - `research/VECTOR_3_HARDWARE_GEODESIC.md` — the clean-sheet "Vector 3.0" hardware vision.
+- `research/BENZY_VECTOR_3_DESIGN_SPEC.md` — **"Benzy"**, the sketch-derived Vector 3.0 product
+  design: the three-body creature (robot + compute-dock + scout drone) and its component manifest.
 - `research/reports/unified/external_sensor_array__UNIFIED.md` — the room-as-extended-body design.
 - `research/reports/unified/physical_attachments__UNIFIED.md` — the cube/thumb/desk-arms design.
 - `research/reports/unified/cutting_edge_oss__UNIFIED.md` — 2024-26 models/runtimes survey.
@@ -219,10 +221,11 @@ about the choices.
 
 Cover, roughly as segments:
 1) FROM 2018 SILICON TO A CLEAN-SHEET CREATURE: what the real 2018 Vector actually is (its tiny
-   budget, its constraints) versus the dreamed "Vector 3.0" on 2026 hardware — bigger battery,
-   multi-camera surround vision, LiDAR/IR, better mics, and a NATIVE tactile "thumb" with pressure
-   sensors. Debate: how much hardware is too much before the creature stops feeling like a creature
-   and starts feeling like a gadget?
+   budget, its constraints) versus the dreamed "Vector 3.0" — codenamed "Benzy" — on 2026 hardware:
+   a three-body creature (the tracked robot, a compute-dock that runs the LLM and memory, and a
+   detachable scout drone), with humanoid arms, multi-camera vision, LiDAR/IR, and a tactile thumb.
+   Debate: how much hardware is too much before the creature stops feeling like a creature and
+   starts feeling like a gadget?
 2) THE ANKI WAY AS A DESIGN RELIGION: self-cancellation (the robot models and subtracts its own
    motor noise from its mics), physical priors (one camera + motion → depth), ethology-first
    (behavior and *feeling* before features), graceful degradation, a hard safety partition, respect
@@ -290,6 +293,7 @@ https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-
 > Part 2 hosts keep the through-line and the human story.
 ```
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/VECTOR_3_HARDWARE_GEODESIC.md
+https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/BENZY_VECTOR_3_DESIGN_SPEC.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/external_sensor_array__UNIFIED.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/physical_attachments__UNIFIED.md
 https://raw.githubusercontent.com/infraax/chimera-brain/refs/heads/claude/multi-repo-architecture-npf6jv/research/reports/unified/cutting_edge_oss__UNIFIED.md
